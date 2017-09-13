@@ -1,0 +1,69 @@
+<configuration debug="true" scan="true" scanPeriod="60 seconds">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/target-case-study.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- hourly rollover -->
+            <fileNamePattern>logs/target-case-study.log.%d{yyyy-MM-dd_HH}.%i</fileNamePattern>
+
+            <!-- keep 24 hours' worth of history -->
+            <maxHistory>24</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 100MB -->
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} ${HOSTNAME} [%thread] %-5level - %X{mdcKeyPipelineSessionInfo} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache" level="INFO" additivity="false">
+	    <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </logger>
+
+
+    <logger name="com.ddatkins" level="INFO" additivity="false">
+    	<appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </logger>
+
+    <!-- log4jdbc sql & jdbc logging -->
+    <logger name="jdbc.sqlonly" additivity="false">
+        <level value="OFF" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <logger name="jdbc.sqltiming" additivity="false">
+        <level value="OFF" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <logger name="jdbc.audit" additivity="false">
+        <level value="OFF" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <logger name="jdbc.resultset" additivity="false">
+        <level value="OFF" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <logger name="jdbc.connection" additivity="false">
+        <level value="OFF" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <logger name="log4jdbc.debug" additivity="false">
+        <level value="OFF" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+
+</configuration>
