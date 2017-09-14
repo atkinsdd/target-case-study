@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.basho.riak.client.api.commands.datatypes.MapUpdate;
 import com.basho.riak.client.api.commands.datatypes.RegisterUpdate;
@@ -31,12 +32,12 @@ public class PriceService {
 		
 		if (persistedPrice != null) {
 			try {
-				if (persistedPrice.getRegister(PRICE_VALUE) != null && persistedPrice.getRegister(PRICE_CURRENCY_CODE)!=null) {
+				if (persistedPrice.getRegister(PRICE_VALUE) != null && persistedPrice.getRegister(CURRENCY_CODE)!=null) {
 					String value = persistedPrice.getRegister(PRICE_VALUE).getValue().toStringUtf8();
 					logger.info("got price = {} for id {}",value, id);
 					currentValue.put(PRICE_VALUE, value);
-					String currencyValue = persistedPrice.getRegister(PRICE_CURRENCY_CODE).getValue().toStringUtf8();
-					currentValue.put(PRICE_CURRENCY_CODE, currencyValue);
+					String currencyValue = persistedPrice.getRegister(CURRENCY_CODE).getValue().toStringUtf8();
+					currentValue.put(CURRENCY_CODE, currencyValue);
 				}
 			} catch (NullPointerException npe) {
 				logger.error("No Riak map for price with key = {}" , id);
@@ -57,6 +58,10 @@ public class PriceService {
 	}
 
 	public boolean updateCurrentPrice(Long id, CurrentPrice currentPrice) {
+		if (!validCurrentPrice(currentPrice)) {
+			return false;
+		}
+		
 		Namespace ns = new Namespace(BUCKET_TYPE, BUCKET_NAME);
 		Location mapLocation = new Location(ns, id.toString());
 
@@ -64,11 +69,26 @@ public class PriceService {
         RegisterUpdate ru2 = new RegisterUpdate(currentPrice.currency_code);
         MapUpdate mu = new MapUpdate()
                 .update(PRICE_VALUE,ru1)
-                .update(PRICE_CURRENCY_CODE, ru2);
+                .update(CURRENCY_CODE, ru2);
 		return riakClientService.mapUpdate(mapLocation, mu);
 		
 	}
 	
+	private boolean validCurrentPrice(CurrentPrice curr) {
+		if (ObjectUtils.isEmpty(curr) || ObjectUtils.isEmpty(curr.currency_code) || ObjectUtils.isEmpty(curr.value)) {
+			logger.error("supplied price is not valid");
+			return false;
+		}
+
+		try {
+			Long.parseLong(curr.value);
+		} catch (NumberFormatException nfe) {
+			logger.error("price value is not a number");
+			return false;
+		}
+
+		return true;
+	}
 	
 
 }

@@ -20,7 +20,7 @@ import com.basho.riak.client.core.query.RiakObject;
 import com.basho.riak.client.core.query.crdt.types.RiakMap;
 
 @Service
-class RiakClientService {
+public class RiakClientService {
 	
 	final static Logger logger = LoggerFactory.getLogger(RiakClientService.class);
 

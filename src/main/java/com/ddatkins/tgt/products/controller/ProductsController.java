@@ -28,7 +28,7 @@ public class ProductsController {
 	ProductService productService;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/product/{id}", produces = "application/json")
-	ResponseEntity<String> getProductData(@PathVariable("id") Long id) {
+	public ResponseEntity<String> getProductData(@PathVariable("id") Long id) {
 		try {
 			Map<String, Object> combinedProductInfo = productService.getCombinedProductPrice(id);
 			String result = productService.getProductJson(combinedProductInfo);
@@ -40,10 +40,10 @@ public class ProductsController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/product/{id}", consumes = "application/json")
-	ResponseEntity<String> updateProductPrice(@PathVariable("id") Long id, @RequestBody CurrentPrice currentPrice) {
-		logger.info("on PUT, the incoming price is {}, {}", currentPrice.currency_code, currentPrice.value);
+	public ResponseEntity<String> updateProductPrice(@PathVariable("id") Long id, @RequestBody CurrentPrice currentPrice) {
+		logger.info("on PUT, the incoming price is {}", currentPrice);
 		if (priceService.updateCurrentPrice(id, currentPrice)) {
-			return ResponseEntity.ok("ok!");
+			return ResponseEntity.ok("success!");
 		} else {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Price update failed");
 		}

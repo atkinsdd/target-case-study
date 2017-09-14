@@ -20,14 +20,23 @@ public class ProductService {
 	final static Logger logger = LoggerFactory.getLogger(ProductService.class);
 	@Autowired PriceService priceService;
 	
-	
+	/*
+	 * {
+    "name": "Xbox One S 1TB Halo Wars 2 Bundle",
+    "id": 52147760,
+    "current_price": {
+        "value": "391.99",
+        "currency_code": "USD"
+    }
+}
+	 */
 	public Map<String, Object> getCombinedProductPrice(Long id) throws PriceException, ProductException {
 		Map<String, Object> combinedProductPrice = new HashMap<String,Object>();
-		combinedProductPrice.put("id", id);
+		combinedProductPrice.put(PRODUCT_ID, id);
 		
 		Map<String, Object> priceCurrentValue = priceService.getPriceCurrentValue(id);
-		combinedProductPrice.put("current_price", priceCurrentValue);
-		combinedProductPrice.put("name",getProductName(id));
+		combinedProductPrice.put(CURRENT_PRICE, priceCurrentValue);
+		combinedProductPrice.put(PRODUCT_NAME,getProductName(id));
 		
 		return combinedProductPrice;
 	}
@@ -60,7 +69,7 @@ public class ProductService {
 	public String getProductJson(Map<String,Object> productDetail) {
     	Gson gson = new Gson();
 		String gsonRes = gson.toJson(productDetail);
-		logger.debug("product detail json = {}", gsonRes);
+		logger.info("product detail json = {}", gsonRes);
 		return gsonRes;
     }
 
