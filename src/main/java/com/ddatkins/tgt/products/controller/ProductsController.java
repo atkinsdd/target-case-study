@@ -29,11 +29,14 @@ public class ProductsController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/product/{id}", produces = "application/json")
 	ResponseEntity<String> getProductData(@PathVariable("id") Long id) {
-
-		Map<String, Object> combinedProductInfo = productService.getCombinedProductPrice(id);
-		String result = productService.getProductJson(combinedProductInfo);
-		logger.info("retrieved result {}", result);
-		return ResponseEntity.ok(result);
+		try {
+			Map<String, Object> combinedProductInfo = productService.getCombinedProductPrice(id);
+			String result = productService.getProductJson(combinedProductInfo);
+			logger.info("retrieved result {}", result);
+			return ResponseEntity.ok(result);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/product/{id}", consumes = "application/json")

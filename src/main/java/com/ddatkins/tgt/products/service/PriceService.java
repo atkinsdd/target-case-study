@@ -14,6 +14,8 @@ import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
 import com.basho.riak.client.core.query.crdt.types.RiakMap;
 import com.ddatkins.tgt.products.domain.CurrentPrice;
+import com.ddatkins.tgt.products.exception.PriceException;
+
 import static com.ddatkins.tgt.products.config.ApplicationConstants.*;
 
 @Service
@@ -22,7 +24,7 @@ public class PriceService {
 	
 	@Autowired RiakClientService riakClientService;
 	
-	public Map<String, Object> getPriceCurrentValue(Long id) {
+	public Map<String, Object> getPriceCurrentValue(Long id) throws PriceException {
 		Map<String, Object> currentValue = new HashMap<String, Object>();
 		
 		RiakMap persistedPrice = getPersistedPriceData(id);
@@ -37,12 +39,12 @@ public class PriceService {
 					currentValue.put(PRICE_CURRENCY_CODE, currencyValue);
 				}
 			} catch (NullPointerException npe) {
-				logger.error("No Riak map for product_name with key = {}" , id);
-				return getErrorCurrentValue();
+				logger.error("No Riak map for price with key = {}" , id);
+				throw new PriceException();
 			}
 		} else {
 			logger.error("persistedPrice null for id {}", id);
-			return getErrorPriceMap(id);
+			throw new PriceException();
 		}
 
 		return currentValue;
@@ -53,26 +55,6 @@ public class PriceService {
 		Namespace ns = new Namespace(BUCKET_TYPE, BUCKET_NAME);
 		return riakClientService.fetchMap(ns, id.toString());
 	}
-	
-	private Map<String, Object> getErrorCurrentValue() {
-		Map<String, Object> currentValue = new HashMap<String, Object>();
-		currentValue.put("value", "N/A");
-		currentValue.put("currency_code", "N/A");
-		
-		return currentValue;
-	}
-	
-	private Map<String, Object> getErrorPriceMap(Long id) {
-		Map<String, Object> priceMap = new HashMap<String, Object>();
-		Map<String, Object> currentValue = new HashMap<String, Object>();
-		priceMap.put("id", id);
-		currentValue.put("value", "N/A");
-		currentValue.put("currency_code", "N/A");
-		priceMap.put("current_price", currentValue);
-		
-		return priceMap;
-	}
-
 
 	public boolean updateCurrentPrice(Long id, CurrentPrice currentPrice) {
 		Namespace ns = new Namespace(BUCKET_TYPE, BUCKET_NAME);

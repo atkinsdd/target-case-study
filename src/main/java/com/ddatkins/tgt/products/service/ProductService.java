@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.ddatkins.tgt.products.exception.PriceException;
+import com.ddatkins.tgt.products.exception.ProductException;
 import com.google.gson.Gson;
 
 import static com.ddatkins.tgt.products.config.ApplicationConstants.*;
@@ -19,7 +21,7 @@ public class ProductService {
 	@Autowired PriceService priceService;
 	
 	
-	public Map<String, Object> getCombinedProductPrice(Long id) {
+	public Map<String, Object> getCombinedProductPrice(Long id) throws PriceException, ProductException {
 		Map<String, Object> combinedProductPrice = new HashMap<String,Object>();
 		combinedProductPrice.put("id", id);
 		
@@ -28,6 +30,22 @@ public class ProductService {
 		combinedProductPrice.put("name",getProductName(id));
 		
 		return combinedProductPrice;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String getProductName(Long id) throws ProductException {
+		String name = null;
+		try {
+			Map<String, Object> productDetail = retrieveProductDetail(id);
+			Map<String, Object> prodMap = (Map<String, Object>) productDetail.get("product");
+			Map<String, Object> itemMap = (Map<String, Object>) prodMap.get("item");
+			Map<String, Object> prodDescription = (Map<String, Object>) itemMap.get("product_description");
+			name = prodDescription.get("title").toString();
+			return name;
+		} catch (Exception e) {
+			logger.error("error retrieving product " + id + " with error " + e.getMessage());
+			throw new ProductException();
+		}
 	}
 	
 	public Map<String, Object> retrieveProductDetail(Long id) {
@@ -46,14 +64,6 @@ public class ProductService {
 		return gsonRes;
     }
 
-	@SuppressWarnings("unchecked")
-	public String getProductName(Long id) {
-		Map<String, Object> productDetail = retrieveProductDetail(id);
-		Map<String,Object> prodMap = (Map<String, Object>) productDetail.get("product");
-    	Map<String,Object> itemMap = (Map<String, Object>) prodMap.get("item");
-    	Map<String,Object> prodDescription = (Map<String, Object>) itemMap.get("product_description");
-		String name = prodDescription.get("title").toString();
-		return name;
-	}
+	
 	
 }
