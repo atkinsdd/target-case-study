@@ -14,12 +14,9 @@ import com.basho.riak.client.api.commands.datatypes.FetchMap;
 import com.basho.riak.client.api.commands.datatypes.MapUpdate;
 import com.basho.riak.client.api.commands.datatypes.RegisterUpdate;
 import com.basho.riak.client.api.commands.datatypes.UpdateMap;
-import com.basho.riak.client.api.commands.kv.StoreValue;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
-import com.basho.riak.client.core.query.RiakObject;
 import com.basho.riak.client.core.query.crdt.types.RiakMap;
-import com.basho.riak.client.core.util.BinaryValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

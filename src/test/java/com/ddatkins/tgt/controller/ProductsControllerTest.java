@@ -1,7 +1,6 @@
 package com.ddatkins.tgt.controller;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.when;
@@ -15,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -67,7 +65,6 @@ public class ProductsControllerTest {
 		curr.value="12345";
 		
 		return curr;
-//		currentPrice.put("name")
 	}
 	private Map<String,Object> getSampleCombinedProduct() {
 		Map<String, Object> combinedProductInfo = new HashMap<String,Object>();
@@ -77,7 +74,7 @@ public class ProductsControllerTest {
 		return combinedProductInfo;
 	}
 	
-	private CombinedProduct getCombinedProduct() {
+	public CombinedProduct getCombinedProduct() {
 		String sampleJson = "{\r\n    \"name\": \"Xbox One S 1TB Halo Wars 2 Bundle\",\r\n    \"id\": 52147760,\r\n    \"current_price\": {\r\n        \"value\": \"391.99\",\r\n        \"currency_code\": \"USD\"\r\n    }\r\n}";
 		Gson gson = new Gson();
 		CombinedProduct prod = gson.fromJson(sampleJson,CombinedProduct.class);

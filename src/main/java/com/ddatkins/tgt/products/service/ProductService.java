@@ -38,6 +38,8 @@ public class ProductService {
 		combinedProductPrice.put(CURRENT_PRICE, priceCurrentValue);
 		combinedProductPrice.put(PRODUCT_NAME,getProductName(id));
 		
+		logger.info("retrieved combined product price = {}",combinedProductPrice);
+		
 		return combinedProductPrice;
 	}
 	
@@ -57,7 +59,7 @@ public class ProductService {
 		}
 	}
 	
-	public Map<String, Object> retrieveProductDetail(Long id) {
+	private Map<String, Object> retrieveProductDetail(Long id) {
 
 		RestTemplate restTemplate = new RestTemplate();
 		@SuppressWarnings("unchecked")

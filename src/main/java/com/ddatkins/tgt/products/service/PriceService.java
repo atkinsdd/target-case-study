@@ -74,14 +74,14 @@ public class PriceService {
 		
 	}
 	
-	private boolean validCurrentPrice(CurrentPrice curr) {
+	public  boolean validCurrentPrice(CurrentPrice curr) {
 		if (ObjectUtils.isEmpty(curr) || ObjectUtils.isEmpty(curr.currency_code) || ObjectUtils.isEmpty(curr.value)) {
 			logger.error("supplied price is not valid");
 			return false;
 		}
 
 		try {
-			Long.parseLong(curr.value);
+			Float.parseFloat(curr.value);
 		} catch (NumberFormatException nfe) {
 			logger.error("price value is not a number");
 			return false;
