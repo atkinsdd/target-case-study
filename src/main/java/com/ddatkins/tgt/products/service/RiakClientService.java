@@ -20,7 +20,7 @@ import com.basho.riak.client.core.query.RiakObject;
 import com.basho.riak.client.core.query.crdt.types.RiakMap;
 
 @Service
-class RiakClientService {
+public class RiakClientService {
 	
 	final static Logger logger = LoggerFactory.getLogger(RiakClientService.class);
 
@@ -100,7 +100,7 @@ class RiakClientService {
 			response = riakClient.execute(update);
 			logger.debug("updateMap response context for location {} = {}", mapLocation, response.hasContext());
 		} catch (ExecutionException | InterruptedException e) {
-			e.printStackTrace();
+			logger.error("error updating maplocation {} with value {}, with error = {}",mapLocation,mu, e.getMessage());
 			return false;
 		}
         return true;

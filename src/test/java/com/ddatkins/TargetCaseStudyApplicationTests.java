@@ -23,6 +23,7 @@ public class TargetCaseStudyApplicationTests {
     private MockMvc mockMvc;
 	@Autowired
 	private ProductsController productsController;
+	
 
 
 	@Test
@@ -31,8 +32,13 @@ public class TargetCaseStudyApplicationTests {
 	}
 	
 	@Test
-	public void testGetProduct() throws Exception {
-		this.mockMvc.perform(get("/products/1")).andDo(print()).andExpect(status().isOk());
+	public void testGetProductNotFound() throws Exception {
+		this.mockMvc.perform(get("/product/0")).andDo(print()).andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void testGetProductFound() throws Exception {
+		this.mockMvc.perform(get("/product/14777812")).andDo(print()).andExpect(status().isOk());
 	}
 
 }
